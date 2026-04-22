@@ -1,17 +1,40 @@
 version: "3.8"
 
+volumes:
+  wordpress_db:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${DATA_DIR}/mariadb
+  wordpress_files:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${DATA_DIR}/wordpress
+  
+networks:
+  inception:
+
 services:
   nginx:
     build: ./requirements/nginx/.
     container_name: nginx
+    image: nginx
     ports:
       - "443:443"
-  # wordpress:
-  #   build: ./requirements/wordpress/.
-  #   container_name: wp-php
+    networks:
+      - inception
+
   mariadb:
     build: ./requirements/mariadb/.
     container_name: mariadb
+    image: mariadb
     env_file: .env
     restart: always
+    volumes:
+      - wordpress_db:/var/lib/mysql
+    networks:
+      - inception
 
