@@ -1,6 +1,6 @@
 all:
-	# @mkdir -p $(DATA_PATH)/mariadb
-	# @mkdir -p $(DATA_PATH)/wordpress
+	@mkdir -p /Users/tanmaypandya/Documents/data/mariadb
+	@mkdir -p /Users/tanmaypandya/Documents/data/wordpress
 	docker compose -f srcs/docker-compose.yml up --build -d
 
 down:
