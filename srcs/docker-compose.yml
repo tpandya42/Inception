@@ -26,6 +26,8 @@ services:
       - "443:443"
     networks:
       - inception
+    volumes:
+      - wordpress_files:/var/www/html
 
   mariadb:
     build: ./requirements/mariadb/.
@@ -37,4 +39,16 @@ services:
       - wordpress_db:/var/lib/mysql
     networks:
       - inception
-
+  
+  wordpress:
+    build: ./requirements/wordpress/.
+    container_name: wordpress
+    image: wordpress
+    depends_on:
+      - mariadb
+    env_file:
+      - .env
+    networks:
+      - inception
+    volumes:
+       - wordpress_files:/var/www/html

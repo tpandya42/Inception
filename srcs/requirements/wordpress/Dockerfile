@@ -12,7 +12,7 @@ RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli
 
 COPY ./conf/www.conf /etc/php/8.4/fpm/pool.d/
 
-RUN mkdir /run/php
+RUN mkdir -p /run/php
 
 COPY ./tools/script.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/script.sh
