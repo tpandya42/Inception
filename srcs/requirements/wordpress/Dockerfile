@@ -7,6 +7,7 @@ RUN		apt-get update && apt-get install -y wget curl bash php php-fpm php-mysql \
 
 # putting wp_cli in correct directory
 RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
+  && echo "ce34ddd838f7351d6759068d09793f26755463b4a4610a5a5c0a97b68220d85c  wp-cli.phar" | sha256sum -c - \
   && chmod +x wp-cli.phar \
   && mv wp-cli.phar /usr/local/bin/wp
 
