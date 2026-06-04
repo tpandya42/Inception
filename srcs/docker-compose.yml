@@ -50,7 +50,7 @@ services:
     networks:
       - inception
     healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u root -p$${MYSQL_ROOT_PASSWORD} --silent"]
+      test: ["CMD-SHELL", "mysqladmin ping --socket=/run/mysqld/mysqld.sock -u root -p$${MYSQL_ROOT_PASSWORD} --silent"]
       interval: 5s
       timeout: 3s
       retries: 15
@@ -81,9 +81,3 @@ services:
       timeout: 5s
       retries: 10
       start_period: 40s
-
-
-
-
-
-
