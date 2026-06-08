@@ -1,4 +1,4 @@
-FROM	debian:bookworm-slim
+FROM	debian:bookworm
 
 RUN		apt-get update && apt-get install -y wget curl bash php php-fpm php-mysql \
 		php-cgi php-pdo php-cli php-gd php-mbstring redis php-redis \

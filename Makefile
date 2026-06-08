@@ -5,7 +5,7 @@ export
 endif
 DATA_DIR ?= /home/$(USER)/data
 
-all:
+up:
 	@mkdir -p $(DATA_DIR)/mariadb
 	@mkdir -p $(DATA_DIR)/wordpress
 	docker compose --env-file $(ENV_FILE) -f srcs/docker-compose.yml up --build -d
@@ -13,7 +13,7 @@ all:
 down:
 	docker compose --env-file $(ENV_FILE) -f srcs/docker-compose.yml down
 
-re: clean all
+re: clean up
 
 clean:
 	docker compose --env-file $(ENV_FILE) -f srcs/docker-compose.yml down --rmi all -v
