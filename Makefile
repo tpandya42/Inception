@@ -16,7 +16,7 @@ down:
 re: clean up
 
 clean:
-	docker compose --env-file $(ENV_FILE) -f srcs/docker-compose.yml down --rmi all -v
+	docker compose --env-file $(ENV_FILE) -f srcs/docker-compose.yml down --rmi all
 
 fclean: clean
 	@sudo rm -rf $(DATA_DIR)/mariadb/*
