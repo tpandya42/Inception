@@ -1,83 +1,69 @@
 version: "3.8"
 
 volumes:
-  wordpress_db:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: ${DATA_DIR}/mariadb
-  wordpress_files:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: ${DATA_DIR}/wordpress
-  
+  wordpress:
+  mariadb:
+
 networks:
   inception:
+    name: inception
 
 services:
   nginx:
-    build: ./requirements/nginx/.
     container_name: nginx
-    image: nginx
-    restart: always
+    build: ./requirements/nginx/.
+    image: nginx:42
+    ports:
+     - "443:443"
     depends_on:
       wordpress:
         condition: service_healthy
-    ports:
-      - "443:443"
+    volumes:
+     - wordpress:/var/www/html
     networks:
       - inception
-    volumes:
-      - wordpress_files:/var/www/html
+    env_file:
+      - .env
+    restart: always
     healthcheck:
-      test: ["CMD-SHELL", "test -f /var/www/html/index.php && echo | openssl s_client -connect 127.0.0.1:443 >/dev/null 2>&1"]
+      test: ["CMD-SHELL", "test -f /var/www/html/index.php"]
       interval: 10s
       timeout: 5s
-      retries: 10
-      start_period: 15s
+      retries: 3
 
-  mariadb:
-    build: ./requirements/mariadb/.
-    container_name: mariadb
-    image: mariadb
-    env_file: .env
-    restart: always
-    volumes:
-      - wordpress_db:/var/lib/mysql
-    networks:
-      - inception
-    healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping --socket=/run/mysqld/mysqld.sock -u root -p$${MYSQL_ROOT_PASSWORD} --silent"]
-      interval: 5s
-      timeout: 3s
-      retries: 15
-      start_period: 30s
-  
   wordpress:
-    build: ./requirements/wordpress/.
     container_name: wordpress
-    image: wordpress
-    restart: always
+    build: ./requirements/wordpress/.
+    image: wordpress:42
     depends_on:
       mariadb:
         condition: service_healthy
+    volumes:
+      - wordpress:/var/www/html
     env_file:
       - .env
     networks:
       - inception
-    volumes:
-       - wordpress_files:/var/www/html
+    restart: always
     healthcheck:
-      test:
-        - CMD-SHELL
-        - >
-          test -f /var/www/html/wp-config.php
-          && php-fpm8.2 -t >/dev/null 2>&1
-          && php -r 'exit(@mysqli_connect("mariadb", getenv("MYSQL_USER"), getenv("MYSQL_PASSWORD"), getenv("MYSQL_DATABASE")) ? 0 : 1);'
+      test: ["CMD-SHELL", "test -f /var/www/html/wp-config.php"]
       interval: 10s
       timeout: 5s
-      retries: 10
-      start_period: 40s
+      retries: 3
+
+  mariadb:
+    container_name: mariadb
+    build: ./requirements/mariadb/.
+    image: mariadb:42
+    volumes:
+      - mariadb:/var/lib/mysql
+    env_file:
+      - .env
+    networks:
+      - inception
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 3

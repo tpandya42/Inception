@@ -14,10 +14,10 @@ EXPOSE 3306
 
 COPY  ./conf/mysqld.conf /etc/mysql/mariadb.conf.d/60-inception.cnf
 COPY ./tools/script.sh /usr/local/bin/script.sh
-COPY ./conf/sqlScript.sql /usr/local/bin/
+#COPY ./conf/sqlScript.sql /usr/local/bin/
 
 RUN chmod +x /usr/local/bin/script.sh
-RUN chmod +x /usr/local/bin/sqlScript.sql
+#RUN chmod +x /usr/local/bin/sqlScript.sql
 
 VOLUME [ "/var/lib/mysql" ]
 
